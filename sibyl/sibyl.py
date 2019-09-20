@@ -1,25 +1,18 @@
-from slackbot.bot import respond_to
-from slackbot.bot import listen_to
-import re
+from slackbot.bot import respond_to, listen_to
+from slackbot.utils import download_file, create_tmp_file
 import numpy as np
 import matplotlib.pyplot as plt
 import lightkurve as lk
-from astropy.stats import LombScargle
 from astroquery.mast import Catalogs
 from astropy.io import ascii
 import pandas as pd
-from slackbot.utils import download_file, create_tmp_file
+import re
 
-@respond_to('hi', re.IGNORECASE)
+@respond_to('hi|hello', re.IGNORECASE)
 def hi(message):
     message.reply('G\'day')
 
-@respond_to('hello', re.IGNORECASE)
-def hi2(message):
-    message.reply('G\'day')
-
-@respond_to('quicklook (.*)$', re.IGNORECASE)
-@respond_to('quicklook (.*) (.*) (.*)', re.IGNORECASE)
+@respond_to('quicklook (.*) (Kepler|K2|TESS) (long|short)', re.IGNORECASE)
 def quicklook(message, star_id, mission=('Kepler', 'K2', 'TESS'), cadence='long'):
     message.react('+1')
     try:
@@ -34,8 +27,7 @@ def quicklook(message, star_id, mission=('Kepler', 'K2', 'TESS'), cadence='long'
     except:
         message.reply('I could not resolve your query. ')
 
-@respond_to('lightcurve (.*)$', re.IGNORECASE)
-@respond_to('lightcurve (.*) (.*) (.*)', re.IGNORECASE)
+@respond_to('lightcurve (.*) (Kepler|K2|TESS) (long|short)', re.IGNORECASE)
 def plot_lightcurve(message, star_id, mission=('Kepler', 'K2', 'TESS'), cadence=None):
     message.react('+1')
 
